@@ -1,16 +1,18 @@
 import sys
 import os
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 def test_import_app():
     try:
+        sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
         from app import app, get_weather_description
         assert app is not None
         print("Приложение импортируется корректно")
         return True
     except ImportError as e:
         print(f"Ошибка импорта: {e}")
+        return False
+    except Exception as e:
+        print(f"Неожиданная ошибка: {e}")
         return False
 
 def test_weather_codes():
@@ -31,6 +33,8 @@ def test_weather_codes():
             if result != expected:
                 print(f"Код {code}: ожидалось '{expected}', получено '{result}'")
                 all_passed = False
+            else:
+                print(f"Код {code}: '{result}'")
         
         if all_passed:
             print("Все коды погоды конвертируются корректно")
@@ -46,16 +50,20 @@ def test_files_exist():
         'requirements.txt',
         'templates/index.html',
         'templates/weather.html',
+        'templates/forecast.html',
+        'templates/error.html',
     ]
     
     all_exist = True
-    base_path = os.path.dirname(os.path.dirname(__file__))
+    base_path = os.path.dirname(__file__)
     
     for file in required_files:
-        file_path = os.path.join(base_path, file)
+        file_path = os.path.join(base_path, '..', file)
         if not os.path.exists(file_path):
             print(f"Файл не найден: {file}")
             all_exist = False
+        else:
+            print(f"Файл найден: {file}")
     
     if all_exist:
         print("Все необходимые файлы присутствуют")
